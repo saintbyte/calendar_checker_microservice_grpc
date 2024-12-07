@@ -1,0 +1,55 @@
+syntax = "proto3";
+package checker;
+option go_package = "github.com/saintbyte/calendar_checker_microservice_grpc;checker";
+
+service Checker {
+  // Просто проверить адрес с календарем работает
+  rpc Check (CheckRequest) returns (CheckResponse);
+  rpc GetCheck(GetCheckRequest) returns (GetCheckResponse);
+  rpc SetToWatch (SetToWatchRequest) returns (SetToWatchResponse);
+}
+
+message Authentication {
+  // Структура авторизации.
+  string login = 1;
+  string password = 2;
+}
+
+message CheckRequest {
+  // Звпрос на проверка адреса календаря. Проверяем на доступность и наличие
+  string url = 1;
+  optional Authentication authentication = 2;
+}
+
+message CheckResponse {
+  // Получить ИД запроса в виде uuid
+  string request_id = 1;
+}
+
+message GetCheckRequest {
+  // Запрос результатов проверки
+  string request_id = 1;
+}
+
+message GetCheckResponse {
+  // Результаты проверки
+  bool is_ready = 1;
+  optional bool is_ok = 2;
+  optional string message = 3;
+}
+
+message SetToWatchRequest {
+  // Запрос на наблюдение изменений
+  string url = 1;
+  optional Authentication authentication = 2;
+  int32 smart_interval = 3;
+  int32 interval = 4;
+  string  webhook_url = 5;
+}
+
+message  SetToWatchResponse {
+  // Ответ , что поставлено на наблюдение или нет .
+  bool is_ready = 1;
+  optional string watch_id = 2;
+  optional string message = 3;
+}
